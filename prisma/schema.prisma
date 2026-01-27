@@ -39,6 +39,7 @@ model Review {
   id String @id @default(uuid())
   studentId String
   tutorId String
+  rating Int
   comment String @db.Text
   createdAt DateTime @default(now())
 }
