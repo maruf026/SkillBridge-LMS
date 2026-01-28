@@ -66,6 +66,12 @@ enum AvailableDay {
   SUNDAY
 }
 
+enum Role {
+  STUDENT
+  TUTOR
+  ADMIN
+}
+
 model User {
   id            String    @id
   name          String
@@ -76,6 +82,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  role          Role      @default(STUDENT)
 
   @@unique([email])
   @@map("user")
