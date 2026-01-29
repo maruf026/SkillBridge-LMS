@@ -9,10 +9,13 @@ import { tutorRouter } from './modules/tutor/tutor.route';
 
 
 const app = express();
+
 app.use(cors({
    origin: process.env.APP_URL || "http://localhost:3000",
    credentials: true
 }));
+
+app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/tutors", tutorRouter);
@@ -21,7 +24,7 @@ app.all("/api/auth/*spat", toNodeHandler(auth));
 
 
 
-app.use(express.json());
+
 
 app.use("/posts", postRouter)
 app.get("/", (req, res)=>{
