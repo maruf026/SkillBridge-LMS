@@ -22,44 +22,67 @@ declare global {
     }
 }
 
+import { prisma } from "../lib/prisma";
+
 const auth = (...roles: UserRole[]) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            // get user session
-            const session = await betterAuth.api.getSession({
-                headers: req.headers as any
-            })
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = await betterAuth.api.getSession({
+        headers: req.headers as any,
+      });
 
-            if (!session) {
-                return res.status(401).json({
-                    success: false,
-                    message: "You are not authorized!"
-                })
-            }
+      if (!session) {
+        return res.status(401).json({
+          success: false,
+          message: "You are not authorized!",
+        });
+      }
 
-          
+      
+      const userFromDb = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: {
+          isBanned: true,
+          role: true,
+          email: true,
+          name: true,
+        },
+      });
 
-            req.user = {
-                id: session.user.id,
-                email: session.user.email,
-                name: session.user.name,
-                role: session.user.role as string,
-               
-            }
+      if (!userFromDb) {
+        return res.status(401).json({
+          success: false,
+          message: "User not found",
+        });
+      }
 
-            if (roles.length && !roles.includes(req.user.role as UserRole)) {
-                return res.status(403).json({
-                    success: false,
-                    message: "Forbidden! You don't have permission to access this resources!"
-                })
-            }
+      if (userFromDb.isBanned) {
+        return res.status(403).json({
+          success: false,
+          message: "Your account has been banned",
+        });
+      }
 
-            next()
-        } catch (err) {
-            next(err);
-        }
+      req.user = {
+        id: session.user.id,
+        email: userFromDb.email,
+        name: userFromDb.name,
+        role: userFromDb.role,
+      };
 
+      if (roles.length && !roles.includes(req.user.role as UserRole)) {
+        return res.status(403).json({
+          success: false,
+          message: "Forbidden! You don't have permission",
+        });
+      }
+
+      next();
+    } catch (err) {
+      next(err);
     }
+  };
 };
+
 
 export default auth;

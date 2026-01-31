@@ -83,19 +83,20 @@ enum Role {
 }
 
 model User {
-  id            String    @id
+  id            String   @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean  @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  role Role @default(STUDENT)
+  role     Role    @default(STUDENT)
+  isBanned Boolean @default(false)
 
-  // relations
+  sessions Session[]
+  accounts Account[]
+
   tutorProfile    TutorProfile?
   studentBookings Booking[]     @relation("StudentBookings")
   tutorBookings   Booking[]     @relation("TutorBookings")
