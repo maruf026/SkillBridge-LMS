@@ -41,6 +41,34 @@ const createReview = async (req: Request, res: Response) => {
 };
 
 
+const getTutorReviews = async (req: Request, res: Response) => {
+  try {
+    const { tutorId } = req.params;
+
+    if (!tutorId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tutor id is required",
+      });
+    }
+
+    const reviews = await reviewServices.getTutorReviews(tutorId as string);
+
+    return res.status(200).json({
+      success: true,
+      data: reviews,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch reviews",
+    });
+  }
+};
+
+
 export const reviewController = {
     createReview,
+    getTutorReviews
 }
