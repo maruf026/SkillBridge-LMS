@@ -8,6 +8,7 @@ import { authRouter } from './modules/auth/auth.route';
 import { tutorRouter } from './modules/tutor/tutor.route';
 import { bookingRouter } from './modules/booking/booking.route';
 import { reviewRouter } from './modules/review/review.routes';
+import { adminRouter } from './modules/admin/admin.routes';
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/tutors", tutorRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/admin", adminRouter);
 app.all("/api/auth/*spat", toNodeHandler(auth));
 
 
