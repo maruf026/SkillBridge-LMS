@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { bookingServices } from "./booking.service";
 import { BookingStatus } from "../../../generated/prisma/enums";
+import { bookingServices } from "./booking.service";
 
 const createBooking = async (req: Request, res: Response) => {
   try {
@@ -33,7 +33,6 @@ const createBooking = async (req: Request, res: Response) => {
   }
 };
 
-
 const getStudentBookings = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
@@ -51,7 +50,6 @@ const getStudentBookings = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 const getTutorBookings = async (req: Request, res: Response) => {
   try {
@@ -71,7 +69,6 @@ const getTutorBookings = async (req: Request, res: Response) => {
   }
 };
 
-
 const updateBookingStatus = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
@@ -88,7 +85,7 @@ const updateBookingStatus = async (req: Request, res: Response) => {
     const updated = await bookingServices.updateBookingStatus(
       id as string,
       user.id,
-      status
+      status,
     );
 
     if (!updated) {
@@ -111,10 +108,9 @@ const updateBookingStatus = async (req: Request, res: Response) => {
   }
 };
 
-
 export const bookingController = {
-    createBooking,
-    getStudentBookings,
-    getTutorBookings,
-    updateBookingStatus
-}
+  createBooking,
+  getStudentBookings,
+  getTutorBookings,
+  updateBookingStatus,
+};

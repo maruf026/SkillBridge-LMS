@@ -1,14 +1,13 @@
-import type { AvailableDay} from "../../../generated/prisma/enums"
-import { prisma } from "../../lib/prisma"
-
+import type { AvailableDay } from "../../../generated/prisma/enums";
+import { prisma } from "../../lib/prisma";
 
 interface CreateTutorProfileInput {
-  userId: string
-  bio: string
-  
-  categoryId: string
-  hourlyRate: number
-  availability: AvailableDay
+  userId: string;
+  bio: string;
+
+  categoryId: string;
+  hourlyRate: number;
+  availability: AvailableDay;
 }
 
 interface UpdateTutorProfileInput {
@@ -18,15 +17,12 @@ interface UpdateTutorProfileInput {
   availability?: AvailableDay | undefined;
 }
 
-
-const createTutorProfile = async (
-  data: CreateTutorProfileInput
-) => {
+const createTutorProfile = async (data: CreateTutorProfileInput) => {
   return prisma.tutorProfile.create({
     data: {
       userId: data.userId,
       bio: data.bio,
-      
+
       categoryId: data.categoryId,
       hourlyRate: data.hourlyRate,
       availability: data.availability,
@@ -53,37 +49,35 @@ const getAllTutors = async () => {
         ...tutor,
         name: user?.name,
       };
-    })
+    }),
   );
 
   return tutorsWithName;
 };
 
-
 const getSingleTutor = async (id: string) => {
   const tutor = await prisma.tutorProfile.findUnique({
-    where: { id }
-  })
+    where: { id },
+  });
 
-  if (!tutor) return null
+  if (!tutor) return null;
 
   const user = await prisma.user.findUnique({
     where: { id: tutor.userId },
     select: {
-      name: true
-    }
-  })
+      name: true,
+    },
+  });
 
   return {
     ...tutor,
-    name: user?.name
-  }
-}
-
+    name: user?.name,
+  };
+};
 
 const updateTutorProfile = async (
   userId: string,
-  input: UpdateTutorProfileInput
+  input: UpdateTutorProfileInput,
 ) => {
   const data: any = {};
 
@@ -109,10 +103,7 @@ const updateTutorProfile = async (
   });
 };
 
-
-
 const deleteTutorProfile = async (userId: string) => {
- 
   const existingProfile = await prisma.tutorProfile.findUnique({
     where: { userId },
   });
@@ -126,14 +117,10 @@ const deleteTutorProfile = async (userId: string) => {
   });
 };
 
-
-
-
-
 export const tutorServices = {
-    createTutorProfile,
-    getAllTutors,
-    getSingleTutor,
-    updateTutorProfile,
-    deleteTutorProfile
-}
+  createTutorProfile,
+  getAllTutors,
+  getSingleTutor,
+  updateTutorProfile,
+  deleteTutorProfile,
+};
