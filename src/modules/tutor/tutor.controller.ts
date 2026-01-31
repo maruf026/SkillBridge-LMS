@@ -1,16 +1,24 @@
 import type { Request, Response } from "express";
 import { tutorServices } from "./tutor.service";
-import type { AvailableDay, TutorSubjects } from "../../../generated/prisma/enums";
+import type { AvailableDay} from "../../../generated/prisma/enums";
 
 
 const createTutorProfile = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
-    const { bio, subject, hourlyRate, availability } = req.body;
+    const { bio, subject, categoryId, hourlyRate, availability } = req.body;
+
+if (!categoryId && !subject) {
+  return res.status(400).json({
+    success: false,
+    message: "Category is required",
+  });
+}
+
 
    
-    if (!bio || !subject || !hourlyRate || !availability) {
+    if (!bio || !categoryId || !hourlyRate || !availability) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -20,7 +28,8 @@ const createTutorProfile = async (req: Request, res: Response) => {
     const result = await tutorServices.createTutorProfile({
       userId: user.id,
       bio,
-      subject,
+      
+      categoryId,
       hourlyRate,
       availability ,
     });
@@ -104,10 +113,10 @@ const updateTutorProfile = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
-    const { bio, subject, hourlyRate, availability } = req.body;
+    const { bio, categoryId, hourlyRate, availability } = req.body;
 
     // prevent empty update
-    if (!bio && !subject && !hourlyRate && !availability) {
+    if (!bio && !categoryId && !hourlyRate && !availability) {
       return res.status(400).json({
         success: false,
         message: "At least one field is required to update",
@@ -118,7 +127,7 @@ const updateTutorProfile = async (req: Request, res: Response) => {
       user.id,
       {
         bio,
-        subject: subject ? (subject as TutorSubjects) : undefined,
+        categoryId,
         hourlyRate,
         availability: availability
           ? (availability as AvailableDay)

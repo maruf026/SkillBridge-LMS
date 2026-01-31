@@ -14,17 +14,27 @@ datasource db {
 }
 
 model TutorProfile {
-  id           String        @id @default(uuid())
-  userId       String        @unique
-  bio          String        @db.Text
-  subject      TutorSubjects
-  isVerified   Boolean       @default(false)
+  id     String @id @default(uuid())
+  userId String @unique
+  bio    String @db.Text
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  isVerified   Boolean      @default(false)
   hourlyRate   Int
   availability AvailableDay
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  createdAt DateTime       @default(now())
+  tutors    TutorProfile[]
 }
 
 model Booking {
@@ -57,13 +67,6 @@ enum BookingStatus {
   PENDING
   ACCEPTED
   REJECTED
-}
-
-enum TutorSubjects {
-  MATH
-  PHYSICS
-  BIOLOGY
-  CHEMISTRY
 }
 
 enum AvailableDay {
