@@ -1,4 +1,4 @@
-import type { AvailableDay } from "../../../generated/prisma/enums";
+import type { AvailableDay } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
 interface CreateTutorProfileInput {

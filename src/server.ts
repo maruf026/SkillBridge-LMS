@@ -10,6 +10,6 @@ async function main() {
   }
 }
 
-main();
+// main();
 
 export default app; 

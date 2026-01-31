@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { BookingStatus } from "../../../generated/prisma/enums";
+import { BookingStatus } from "../../generated/prisma/enums";
 import { bookingServices } from "./booking.service";
 
 const createBooking = async (req: Request, res: Response) => {

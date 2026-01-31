@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { tutorServices } from "./tutor.service";
-import type { AvailableDay} from "../../../generated/prisma/enums";
+import type { AvailableDay} from "../../generated/prisma/enums";
 
 
 const createTutorProfile = async (req: Request, res: Response) => {

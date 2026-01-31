@@ -1,4 +1,4 @@
-import type { BookingStatus } from "../../../generated/prisma/enums";
+import type { BookingStatus } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
 interface CreateBookingInput {
