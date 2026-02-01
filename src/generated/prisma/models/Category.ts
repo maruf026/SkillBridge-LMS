@@ -250,9 +250,9 @@ export type CategoryUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type CategoryNullableScalarRelationFilter = {
-  is?: Prisma.CategoryWhereInput | null
-  isNot?: Prisma.CategoryWhereInput | null
+export type CategoryScalarRelationFilter = {
+  is?: Prisma.CategoryWhereInput
+  isNot?: Prisma.CategoryWhereInput
 }
 
 export type CategoryCountOrderByAggregateInput = {
@@ -279,12 +279,10 @@ export type CategoryCreateNestedOneWithoutTutorsInput = {
   connect?: Prisma.CategoryWhereUniqueInput
 }
 
-export type CategoryUpdateOneWithoutTutorsNestedInput = {
+export type CategoryUpdateOneRequiredWithoutTutorsNestedInput = {
   create?: Prisma.XOR<Prisma.CategoryCreateWithoutTutorsInput, Prisma.CategoryUncheckedCreateWithoutTutorsInput>
   connectOrCreate?: Prisma.CategoryCreateOrConnectWithoutTutorsInput
   upsert?: Prisma.CategoryUpsertWithoutTutorsInput
-  disconnect?: Prisma.CategoryWhereInput | boolean
-  delete?: Prisma.CategoryWhereInput | boolean
   connect?: Prisma.CategoryWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CategoryUpdateToOneWithWhereWithoutTutorsInput, Prisma.CategoryUpdateWithoutTutorsInput>, Prisma.CategoryUncheckedUpdateWithoutTutorsInput>
 }

@@ -18,19 +18,6 @@ export const BookingStatus = {
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus]
 
 
-export const AvailableDay = {
-  MONDAY: 'MONDAY',
-  TUESDAY: 'TUESDAY',
-  WEDNESDAY: 'WEDNESDAY',
-  THURSDAY: 'THURSDAY',
-  FRIDAY: 'FRIDAY',
-  SATURDAY: 'SATURDAY',
-  SUNDAY: 'SUNDAY'
-} as const
-
-export type AvailableDay = (typeof AvailableDay)[keyof typeof AvailableDay]
-
-
 export const Role = {
   STUDENT: 'STUDENT',
   TUTOR: 'TUTOR',

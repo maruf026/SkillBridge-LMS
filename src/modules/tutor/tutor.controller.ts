@@ -1,29 +1,35 @@
 import type { Request, Response } from "express";
 import { tutorServices } from "./tutor.service";
-import type { AvailableDay} from "../../generated/prisma/enums";
+
 
 
 const createTutorProfile = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
-    const { bio, subject, categoryId, hourlyRate, availability } = req.body;
+    const { bio, categoryId, hourlyRate, availability } = req.body;
 
-if (!categoryId && !subject) {
-  return res.status(400).json({
-    success: false,
-    message: "Category is required",
-  });
-}
+
 
 
    
-    if (!bio || !categoryId || !hourlyRate || !availability) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
+   if (!bio || !categoryId || !hourlyRate || !availability) {
+  return res.status(400).json({
+    success: false,
+    message: "All fields are required",
+  });
+}
+
+if (
+  typeof availability !== "object" ||
+  Array.isArray(availability) ||
+  Object.keys(availability).length === 0
+) {
+  return res.status(400).json({
+    success: false,
+    message: "Invalid availability format",
+  });
+}
 
     const result = await tutorServices.createTutorProfile({
       userId: user.id,
@@ -117,11 +123,11 @@ const updateTutorProfile = async (req: Request, res: Response) => {
 
     // prevent empty update
     if (!bio && !categoryId && !hourlyRate && !availability) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one field is required to update",
-      });
-    }
+  return res.status(400).json({
+    success: false,
+    message: "At least one field is required to update",
+  });
+}
 
     const updatedProfile = await tutorServices.updateTutorProfile(
       user.id,
@@ -130,7 +136,7 @@ const updateTutorProfile = async (req: Request, res: Response) => {
         categoryId,
         hourlyRate,
         availability: availability
-          ? (availability as AvailableDay)
+          ? (availability)
           : undefined,
       }
     );

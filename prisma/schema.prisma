@@ -18,14 +18,16 @@ model TutorProfile {
   userId String @unique
   bio    String @db.Text
 
-  categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
 
-  isVerified   Boolean      @default(false)
-  hourlyRate   Int
-  availability AvailableDay
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  availability Json
+
+  hourlyRate Int
+  isVerified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -67,16 +69,6 @@ enum BookingStatus {
   PENDING
   ACCEPTED
   REJECTED
-}
-
-enum AvailableDay {
-  MONDAY
-  TUESDAY
-  WEDNESDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-  SUNDAY
 }
 
 enum Role {

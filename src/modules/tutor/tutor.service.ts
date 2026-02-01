@@ -1,20 +1,20 @@
-import type { AvailableDay } from "../../generated/prisma/enums";
+
 import { prisma } from "../../lib/prisma";
 
 interface CreateTutorProfileInput {
   userId: string;
   bio: string;
-
+   availability: any;
   categoryId: string;
   hourlyRate: number;
-  availability: AvailableDay;
+  
 }
 
 interface UpdateTutorProfileInput {
   bio?: string | undefined;
   categoryId?: string | undefined;
   hourlyRate?: number | undefined;
-  availability?: AvailableDay | undefined;
+  availability?: any | undefined;
 }
 
 const createTutorProfile = async (data: CreateTutorProfileInput) => {
@@ -86,7 +86,7 @@ const updateTutorProfile = async (
   }
 
   if (input.categoryId !== undefined) {
-    data.subject = input.categoryId;
+    data.categoryId = input.categoryId;
   }
 
   if (input.hourlyRate !== undefined) {
