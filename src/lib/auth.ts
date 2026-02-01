@@ -9,6 +9,12 @@ export const auth = betterAuth({
      trustedOrigins: [
     process.env.APP_URL!
   ],
+
+  cookies: {
+    sessionToken: {
+      path: "/", 
+    },
+  },
    
   user: {
        additionalFields: {
