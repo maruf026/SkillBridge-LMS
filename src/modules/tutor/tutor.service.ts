@@ -35,25 +35,43 @@ const getAllTutors = async () => {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      category: true,
+      reviews: {
+        select: {
+          rating: true,
+        },
+      },
+    },
   });
 
-  // fetch names for each tutor
-  const tutorsWithName = await Promise.all(
-    tutors.map(async (tutor) => {
-      const user = await prisma.user.findUnique({
-        where: { id: tutor.userId },
-        select: { name: true },
-      });
+  return tutors.map((tutor) => {
+    const ratings = tutor.reviews.map((r) => r.rating);
+    const avgRating =
+      ratings.length > 0
+        ? ratings.reduce((a, b) => a + b, 0) / ratings.length
+        : null;
 
-      return {
-        ...tutor,
-        name: user?.name,
-      };
-    }),
-  );
-
-  return tutorsWithName;
+    return {
+      id: tutor.id,
+      userId: tutor.userId,
+      name: tutor.user.name,
+      bio: tutor.bio,
+      hourlyRate: tutor.hourlyRate,
+      availability: tutor.availability,
+      category: tutor.category,
+      avgRating,
+      totalReviews: ratings.length,
+      createdAt: tutor.createdAt,
+    };
+  });
 };
+
 
 const getSingleTutor = async (id: string) => {
   const tutor = await prisma.tutorProfile.findUnique({

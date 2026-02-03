@@ -82,8 +82,8 @@ export const TutorProfileScalarFieldEnum = {
   userId: 'userId',
   bio: 'bio',
   categoryId: 'categoryId',
-  availability: 'availability',
   hourlyRate: 'hourlyRate',
+  availability: 'availability',
   isVerified: 'isVerified',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -115,10 +115,10 @@ export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeo
 
 export const ReviewScalarFieldEnum = {
   id: 'id',
-  studentId: 'studentId',
-  tutorId: 'tutorId',
   rating: 'rating',
   comment: 'comment',
+  tutorId: 'tutorId',
+  studentId: 'studentId',
   createdAt: 'createdAt'
 } as const
 

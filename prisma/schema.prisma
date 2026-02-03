@@ -16,20 +16,20 @@ datasource db {
 model TutorProfile {
   id     String @id @default(uuid())
   userId String @unique
-  bio    String @db.Text
+  user   User   @relation(fields: [userId], references: [id])
 
+  bio        String
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
 
+  hourlyRate   Int
   availability Json
+  isVerified   Boolean @default(false)
 
-  hourlyRate Int
-  isVerified Boolean @default(false)
+  reviews Review[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
 }
 
 model Category {
@@ -53,16 +53,17 @@ model Booking {
 }
 
 model Review {
-  id        String   @id @default(uuid())
-  studentId String
-  tutorId   String
-  rating    Int
-  comment   String   @db.Text
-  createdAt DateTime @default(now())
+  id      String @id @default(uuid())
+  rating  Int
+  comment String
 
-  // relations
-  student User @relation("StudentReviews", fields: [studentId], references: [id])
-  tutor   User @relation("TutorReviews", fields: [tutorId], references: [id])
+  tutorId String
+  tutor   TutorProfile @relation(fields: [tutorId], references: [id])
+
+  studentId String
+  student   User   @relation("StudentReviews", fields: [studentId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 enum BookingStatus {
@@ -80,7 +81,7 @@ enum Role {
 model User {
   id            String   @id
   name          String
-  email         String
+  email         String   @unique
   emailVerified Boolean  @default(false)
   image         String?
   createdAt     DateTime @default(now())
@@ -92,13 +93,13 @@ model User {
   sessions Session[]
   accounts Account[]
 
-  tutorProfile    TutorProfile?
-  studentBookings Booking[]     @relation("StudentBookings")
-  tutorBookings   Booking[]     @relation("TutorBookings")
-  studentReviews  Review[]      @relation("StudentReviews")
-  tutorReviews    Review[]      @relation("TutorReviews")
+  tutorProfile TutorProfile?
 
-  @@unique([email])
+  studentBookings Booking[] @relation("StudentBookings")
+  tutorBookings   Booking[] @relation("TutorBookings")
+
+  reviewsGiven Review[] @relation("StudentReviews")
+
   @@map("user")
 }
 

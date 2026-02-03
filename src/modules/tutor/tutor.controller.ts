@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { tutorServices } from "./tutor.service";
+import { prisma } from "../../lib/prisma";
 
 
 
@@ -7,46 +8,58 @@ const createTutorProfile = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
 
-    const { bio, categoryId, hourlyRate, availability } = req.body;
+    const { bio, categoryName, hourlyRate, availability } = req.body;
 
+    
+    if (!bio || !categoryName || !hourlyRate || !availability) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
 
-
+    if (
+      typeof availability !== "object" ||
+      Array.isArray(availability) ||
+      Object.keys(availability).length === 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid availability format",
+      });
+    }
 
    
-   if (!bio || !categoryId || !hourlyRate || !availability) {
-  return res.status(400).json({
-    success: false,
-    message: "All fields are required",
-  });
-}
+    const category = await prisma.category.findFirst({
+      where: {
+        name: {
+          equals: categoryName,
+          mode: "insensitive",
+        },
+      },
+    });
 
-if (
-  typeof availability !== "object" ||
-  Array.isArray(availability) ||
-  Object.keys(availability).length === 0
-) {
-  return res.status(400).json({
-    success: false,
-    message: "Invalid availability format",
-  });
-}
+    if (!category) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category name",
+      });
+    }
 
+   
     const result = await tutorServices.createTutorProfile({
       userId: user.id,
       bio,
-      
-      categoryId,
+      categoryId: category.id, // ✅ FIX
       hourlyRate,
-      availability ,
+      availability,
     });
 
     return res.status(201).json({
       success: true,
       data: result,
     });
-
   } catch (error: any) {
-    // duplicate profile (unique userId)
     if (error.code === "P2002") {
       return res.status(409).json({
         success: false,
@@ -61,6 +74,7 @@ if (
     });
   }
 };
+
 
 const getAllTutors = async (req: Request, res: Response) => {
   try {
