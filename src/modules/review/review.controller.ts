@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { reviewServices } from "./review.service";
+import { prisma } from "../../lib/prisma";
 
 const createReview = async (req: Request, res: Response) => {
   try {
@@ -9,33 +10,41 @@ const createReview = async (req: Request, res: Response) => {
     if (!tutorId || !rating || !comment) {
       return res.status(400).json({
         success: false,
-        message: "Tutor id, rating and comment are required",
+        message: "All fields are required",
       });
     }
 
-    if (rating < 1 || rating > 5) {
-      return res.status(400).json({
+
+    const tutorProfile = await prisma.tutorProfile.findUnique({
+      where: { userId: tutorId },
+    });
+
+    if (!tutorProfile) {
+      return res.status(404).json({
         success: false,
-        message: "Rating must be between 1 and 5",
+        message: "Tutor profile not found",
       });
     }
 
-    const review = await reviewServices.createReview({
-      studentId: user.id,
-      tutorId,
-      rating,
-      comment,
+    const review = await prisma.review.create({
+      data: {
+        studentId: user.id,
+        tutorId: tutorProfile.id, // ✅ CORRECT ID
+        rating: Number(rating),
+        comment,
+      },
     });
 
     return res.status(201).json({
       success: true,
       data: review,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("REVIEW ERROR:", error);
+
     return res.status(500).json({
       success: false,
-      message: "Failed to create review",
+      message: "Failed to submit review",
     });
   }
 };

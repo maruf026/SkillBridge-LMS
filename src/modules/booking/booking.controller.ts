@@ -69,6 +69,33 @@ const getTutorBookings = async (req: Request, res: Response) => {
   }
 };
 
+const getSingleBooking = async (req: Request, res: Response) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+
+    const booking = await bookingServices.getSingleBooking(id as string, user);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: booking,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch booking",
+    });
+  }
+};
+
+
 const updateBookingStatus = async (req: Request, res: Response) => {
   try {
     const user = req.user!;
@@ -113,4 +140,5 @@ export const bookingController = {
   getStudentBookings,
   getTutorBookings,
   updateBookingStatus,
+  getSingleBooking
 };

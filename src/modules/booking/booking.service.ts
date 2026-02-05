@@ -40,6 +40,25 @@ const getTutorBookings = async (tutorId: string) => {
 };
 
 
+const getSingleBooking = async (bookingId: string, user: any) => {
+  return prisma.booking.findFirst({
+    where: {
+      id: bookingId,
+      OR: [
+        { studentId: user.id },
+        { tutorId: user.id },
+      ],
+    },
+    include: {
+      tutor: {
+        select: { name: true },
+      },
+    },
+  });
+};
+
+
+
 const updateBookingStatus = async (
   bookingId: string,
   tutorId: string,
@@ -64,5 +83,6 @@ export const bookingServices = {
     createBooking,
     getStudentBookings,
     getTutorBookings,
-    updateBookingStatus
+    updateBookingStatus,
+    getSingleBooking
 }

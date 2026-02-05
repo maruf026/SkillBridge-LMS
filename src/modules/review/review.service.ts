@@ -7,13 +7,24 @@ interface CreateReviewInput {
   comment: string;
 }
 
-const createReview = async (data: CreateReviewInput) => {
+const createReview = async (
+  studentId: string,
+  tutorUserId: string,
+  rating: number,
+  comment: string
+) => {
+  const tutorProfile = await prisma.tutorProfile.findUnique({
+    where: { userId: tutorUserId },
+  });
+
+  if (!tutorProfile) return null;
+
   return prisma.review.create({
     data: {
-      studentId: data.studentId,
-      tutorId: data.tutorId,
-      rating: data.rating,
-      comment: data.comment,
+      studentId,
+      tutorId: tutorProfile.id,
+      rating,
+      comment,
     },
   });
 };

@@ -10,6 +10,8 @@ router.get(
   auth(UserRole.STUDENT),
   bookingController.getStudentBookings,
 );
+router.get("/:id", auth(), bookingController.getSingleBooking);
+
 router.get("/tutor", auth(UserRole.TUTOR), bookingController.getTutorBookings);
 router.patch(
   "/:id/status",
