@@ -76,22 +76,27 @@ const getAllTutors = async () => {
 const getSingleTutor = async (id: string) => {
   const tutor = await prisma.tutorProfile.findUnique({
     where: { id },
+    include: {
+      user: {
+        select: { name: true },
+      },
+      category: true,
+    },
   });
 
   if (!tutor) return null;
 
-  const user = await prisma.user.findUnique({
-    where: { id: tutor.userId },
-    select: {
-      name: true,
-    },
-  });
-
   return {
-    ...tutor,
-    name: user?.name,
+    id: tutor.id,                 // ✅ TutorProfile.id
+    userId: tutor.userId,         // User.id
+    name: tutor.user.name,
+    bio: tutor.bio,
+    hourlyRate: tutor.hourlyRate,
+    availability: tutor.availability,
+    category: tutor.category,
   };
 };
+
 
 const updateTutorProfile = async (
   userId: string,

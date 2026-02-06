@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import { adminServices } from "./admin.service";
+import { prisma } from "../../lib/prisma";
+
 
 const getAllUsers = async (_req: Request, res: Response) => {
   try {
@@ -19,19 +21,20 @@ const getAllUsers = async (_req: Request, res: Response) => {
 };
 
 
-const banOrUnbanUser = async (req: Request, res: Response) => {
+
+
+
+export const banOrUnbanUser = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
   try {
     const { id } = req.params;
-    const { isBanned } = req.body;
 
-    if (typeof isBanned !== "boolean") {
-      return res.status(400).json({
-        success: false,
-        message: "isBanned must be boolean",
-      });
-    }
-
-    const user = await adminServices.banOrUnbanUser(id as string, isBanned);
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { isBanned: true },
+    });
 
     if (!user) {
       return res.status(404).json({
@@ -40,18 +43,26 @@ const banOrUnbanUser = async (req: Request, res: Response) => {
       });
     }
 
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { isBanned: !user.isBanned },
+    });
+
     return res.status(200).json({
       success: true,
-      data: user,
+      message: updatedUser.isBanned
+        ? "User banned successfully"
+        : "User unbanned successfully",
     });
   } catch (error) {
-    console.error(error);
+    console.error("BAN ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Failed to update user status",
     });
   }
 };
+
 
 
 const getAllBookings = async (_req: Request, res: Response) => {
