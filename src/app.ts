@@ -13,10 +13,38 @@ import { adminRouter } from './modules/admin/admin.routes';
 
 const app = express();
 
-app.use(cors({
-   origin: process.env.APP_URL || "http://localhost:3000",
-   credentials: true
-}));
+// app.use(cors({
+//    origin: process.env.APP_URL || "http://localhost:3000",
+//    credentials: true
+// }));
+
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://skill-bridge-frontend-gules.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow server-to-server / Postman
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(
+        new Error(`CORS blocked for origin: ${origin}`)
+      );
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
+  })
+);
+
 
 app.use(express.json());
 

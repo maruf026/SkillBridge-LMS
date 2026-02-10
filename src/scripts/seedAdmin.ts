@@ -27,7 +27,7 @@ async function seedAdmin() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Origin": "http://localhost:3000",
+                "Origin": "https://skill-bridge-frontend-gules.vercel.app",
             },
             body: JSON.stringify(adminData)
         })

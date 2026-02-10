@@ -7,19 +7,19 @@ export const auth = betterAuth({
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
      trustedOrigins: [
-    process.env.APP_URL!,
-    "https://skill-bridge-liard.vercel.app",
-  ],
+  "http://localhost:3000",
+  "https://skill-bridge-frontend-gules.vercel.app",
+],
 
   cookies: {
     sessionToken: {
       path: "/", 
     },
-    options: {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    },
+     options: {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  },
   },
    
   user: {
