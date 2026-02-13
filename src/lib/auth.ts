@@ -10,31 +10,32 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60,
+      maxAge: 5 * 60, // 5 minutes
     },
   },
 
+  // This section ensures cookies work across your two different Vercel domains
   advanced: {
     cookiePrefix: "better-auth",
-    useSecureCookies: true, // Forces __Secure- prefix
+    useSecureCookies: true, // Required for __Secure- prefix and cross-site
     cookieOptions: {
-      sameSite: "none", // Allows cross-site cookie storage
-      secure: true,     // Required for sameSite: "none"
-      httpOnly: true,
+      sameSite: "none", // Allows the browser to save cookie from backend domain
+      secure: true,     // Required for SameSite=None
+      httpOnly: true,   // Security best practice
     },
     crossSubDomainCookies: {
       enabled: false,
     },
-    disableCSRFCheck: true,
+    disableCSRFCheck: true, // Helps with cross-origin requests
   },
 
+  // Explicitly allowing your frontend to talk to this auth instance
   trustedOrigins: [
     "http://localhost:3000",
     "https://skill-bridge-frontend-gules.vercel.app",
   ],
 
-  // REMOVE the separate 'cookies' object to avoid overriding 'advanced'
-  // Or if you keep it, use 'attributes' instead of 'options'
+  // Specific override for the session token to fix the "Yellow Triangle" error
   cookies: {
     sessionToken: {
       attributes: {
